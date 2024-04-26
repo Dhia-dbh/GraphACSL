@@ -11,6 +11,7 @@
 struct node{
    unsigned vertex;
    struct node* suivant;
+   unsigned weight; //weight of the exiting arc if one exists
 };
 struct arc{
    unsigned src, dest;
@@ -35,8 +36,8 @@ unsigned ordre(struct graph g);
 
 unsigned arc(struct graph graph, struct node node1, struct node node2);
 
-int degre_exterieur(struct graph graph, struct node vertex);
+int degre_exterieur(struct graph graph, struct node node);
 
-int degre_interieur(struct graph graph, struct node vertex);
+int degre_interieur(struct graph graph, struct node node);
 
-int degre(struct graph graph, struct node vertex);
+int degre(struct graph graph, struct node node);
