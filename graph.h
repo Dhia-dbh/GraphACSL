@@ -23,7 +23,7 @@ struct graph* cree_graph();
 
 struct graph* cree_graph(struct node nodes[], int nb_nodes);
 
-void ajouter_arc(struct graph* graph, node src, struct node dest, unsigned weight);
+void ajouter_arc(struct graph* graph, struct node src, struct node dest, unsigned weight);
 //Dans notre implémentation, un arc sortant par
 void supprimer_arc(struct graph* graph, struct node src, struct node dest);  
 
