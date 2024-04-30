@@ -11,20 +11,17 @@
 struct node{
    unsigned vertex;
    struct node* suivant;
-   unsigned weight; //weight of the exiting arc if one exists
 };
-struct arc{
-   unsigned src, dest;
-   unsigned weight;
-};
+
 struct graph{
    struct node* liste_adj[n]; //Un tableau de listes liniaries décriant les aretes de G
 };
+
 struct graph* cree_graph();
 
-struct graph* cree_graph(struct node nodes[], int nb_nodes);
 
-void ajouter_arc(struct graph* graph, struct node src, struct node dest, unsigned weight);
+void ajouter_arc(struct graph* graph, struct node src, struct node dest);
+
 //Dans notre implémentation, un arc sortant par
 void supprimer_arc(struct graph* graph, struct node src, struct node dest);  
 
@@ -41,3 +38,6 @@ int degre_exterieur(struct graph graph, struct node node);
 int degre_interieur(struct graph graph, struct node node);
 
 int degre(struct graph graph, struct node node);
+void DFS_mark_visited(struct graph* graph, unsigned vertex, int visited[]);
+void DFS(struct graph* graph, unsigned vertex);
+int nombre_composantes_connexes(struct graph* graph);

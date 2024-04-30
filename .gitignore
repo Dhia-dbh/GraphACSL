@@ -1,1 +1,5 @@
 *.jpg
+*.xml
+*.iml
+*.exe
+/.idea

@@ -7,54 +7,97 @@ struct graph* cree_graph(){
    return graph;
 }
 
-// Fonction pour créer une liste d'adjacence à partir des arêtes spécifiées
-struct graph* cree_graph(struct arc liste_arc[], int nb_nodes)
-{
-    // alloue de l'espace de stockage pour la structure de données du graphe
-    struct graph* graph = (struct graph*)malloc(sizeof(struct graph));
- 
-    // initialise le pointeur principal pour tous les sommets
+
+void ajouter_arc(struct graph* graph, struct node src, struct node dest){
+
+    struct node* new_node = (struct node*)malloc(sizeof(struct node));
+    new_node->vertex = dest.vertex;
+    new_node->suivant = NULL;
+    struct node* current = graph->liste_adj[src.vertex];
+    if (current == NULL) {
+        graph->liste_adj[src.vertex] = new_node;
+    } else {
+        while (current->suivant != NULL) {
+            current = current->suivant;
+        }
+        current->suivant = new_node;
+    }
+}
+
+void supprimer_arc(struct graph* graph, struct node src, struct node dest){
+    if (graph->liste_adj[src.vertex] == NULL) {
+        printf("Error: Source vertex %u does not exist in the graph.\n", src.vertex);
+        return;
+    }
+
+    //  Search for the node to be deleted in the source's adjacency list
+    struct node* current = graph->liste_adj[src.vertex];
+    struct node* prev = NULL;  // Keep track of the previous node for efficient deletion
+
+    while (current != NULL) {
+        if (current->vertex == dest.vertex) {
+            // Arc found: remove the current node
+            if (prev == NULL) {  // Deleting the head node
+                graph->liste_adj[src.vertex] = current->suivant;
+            } else {
+                prev->suivant = current->suivant;
+            }
+            free(current);  // Free the memory allocated for the deleted node
+            return;
+        }
+        prev = current;
+        current = current->suivant;
+    }
+
+    // Arc not found: inform the user
+    printf("Arc from vertex %u to %u does not exist in the graph.\n", src.vertex, dest.vertex);
+
+}
+
+void ajouter_sommet(struct graph* graph, unsigned vertex){
+    // testi idha il slot fergha wala le w zid testi idha vertex<n (ACSL)
+    struct node* new_node = (struct node*)malloc(sizeof(struct node));
+    new_node->vertex = vertex;
+    new_node->suivant = NULL;
+    graph->liste_adj[vertex ] = new_node;
+}
+
+
+void supprimer_sommet(struct graph* graph, unsigned vertex) {
+    // Delete incoming arcs
     for (int i = 0; i < n; i++) {
-        graph->liste_adj[i] = NULL;
+        if (i != vertex ) {  // Skip the vertex itself
+            struct node* current = graph->liste_adj[i];
+            struct node* prev = NULL;
+            while (current != NULL) {
+                if (current->vertex == vertex) {
+                    // Arc found: remove it
+                    if (prev == NULL) {  // Deleting the head node of the adjacency list
+                        graph->liste_adj[i] = current->suivant;
+                    } else {
+                        prev->suivant = current->suivant;
+                    }
+                    free(current);  // Free the memory of the deleted node
+                    break;  // Only need to remove one incoming arc
+                }
+                prev = current;
+                current = current->suivant;
+            }
+        }
     }
- 
-    // ajoute les arêtes au nodee orienté une par une
-    for (int i = 0; i < n; i++)
-    {
-        // récupère le sommet source et destination
-        int src = liste_arc[i].src;
-        int dest = liste_arc[i].dest;
-        int weight = liste_arc[i].weight;
- 
-        // alloue un nouveau noeud de la liste d'adjacence de src à dest
-        struct node* newDestNode = (struct node*)malloc(sizeof(struct node));
-        struct node* newSrcNode = (struct node*)malloc(sizeof(struct node));
 
-        newSrcNode->vertex = src;
-        newSrcNode -> suivant = newDestNode;
-        newSrcNode -> weight = weight;
-
-
-        graph->liste_adj[src] = newSrcNode;
-        graph->liste_adj[dest] = newDestNode;
+    // Delete outgoing arcs
+    struct node* current = graph->liste_adj[vertex];
+    while (current != NULL) {
+        struct node* next = current->suivant;
+        free(current);
+        current = next;
     }
- 
-    return graph;
+    graph->liste_adj[vertex ] = NULL;
+
 }
 
-void ajouter_arc(struct graph* graph, struct node src, struct node dest, unsigned weight){
-   (graph->liste_adj[src.vertex])->suivant = &dest;
-}
-
-void supprimer_arc(struct graph* graph, struct node node){
-   graph->liste_adj[node.vertex] = NULL;
-}
-
-void ajouter_sommet(struct graph* graph, struct node node){
-   graph->liste_adj[node.vertex] = &node;
-}
-
-unsigned ordre(struct graph graph){
+    unsigned ordre(struct graph graph){
    unsigned result=0;
    for(int i=0; i<n;++i){
       if (graph.liste_adj[i] != NULL)
@@ -64,21 +107,155 @@ unsigned ordre(struct graph graph){
 }
 
 unsigned arc(struct graph graph, struct node node1, struct node node2){
-   return graph.liste_adj[node1.vertex]->suivant->vertex == node2.vertex?1:0;
+    struct node* current = graph.liste_adj[node1.vertex ];
+    while (current != NULL) {
+        if (current->vertex == node2.vertex) {
+            return 1;  // Arc found
+        }
+        current = current->suivant;
+    }
+    return 0;  // Arc not found
 }
 
 int degre_exterieur(struct graph graph, struct node node){
-   graph.liste_adj[node.vertex]->suivant != NULL?1:0;
+    struct node* current = graph.liste_adj[node.vertex ];
+    int count = 0;
+    while (current != NULL) {
+        count++;
+        current = current->suivant;
+    }
+
+    return count;
 }
 
 int degre_interieur(struct graph graph, struct node node){
-   int result =0;
-   for(int i=0;i<n;++i){
-      result += graph.liste_adj[i]->suivant->vertex == node.vertex?1:0; //arc(graph, *graph.liste_adj[i], node);
-   }
-   return result;
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        struct node* current = graph.liste_adj[i];
+        while (current != NULL) {
+            if (current->vertex == node.vertex) {
+                count++;  // Incoming arc found from the current node (i) to the given node
+                break;  // No need to check further for this node (i)
+            }
+            current = current->suivant;
+        }
+    }
+
+    return count;
 }
 
 int degre(struct graph graph, struct node node){
    return degre_exterieur(graph, node) - degre_interieur(graph, node);
+}
+
+void DFS_mark_visited(struct graph* graph, unsigned vertex, int visited[]) {
+    visited[vertex] = 1;  // Mark the current node as visited
+
+    // Recur for all unvisited adjacent vertices
+    struct node* current = graph->liste_adj[vertex];
+    while (current) {
+        if (!visited[current->vertex]) {
+            DFS_mark_visited(graph, current->vertex, visited);
+        }
+        current = current->suivant;
+    }
+}
+
+void DFS(struct graph* graph, unsigned vertex) {
+    int visited[n]; // Visited flag for each vertex
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;  // Initialize all nodes as unvisited
+    }
+
+    DFS_mark_visited(graph, vertex, visited);  // Start DFS from the given vertex
+
+    // Print visited vertices (optional)
+    printf("DFS traversal (starting from vertex %u): ", vertex);
+    for (int i = 0; i < n; i++) {
+        if (visited[i]) {
+            printf("%u ", i);
+        }
+    }
+    printf("\n");
+}
+
+int nombre_composantes_connexes(struct graph* graph) {
+        // Allocate visited array (all 0 for unvisited initially)
+        unsigned* visited = malloc(n * sizeof(unsigned));
+        for (int i = 0; i < n; i++) {
+            visited[i] = 0;
+        }
+
+        // Count connected components using DFS
+        int count = 0;
+        for (int v = 0; v < n; v++) {
+            if (!visited[v]) {  // If the node hasn't been visited yet
+                DFS_mark_visited(graph, v, visited);  // Perform DFS starting from this unvisited node
+                count++;  // Increment component count as this DFS explores a new component
+            }
+        }
+
+        // Free the memory allocated for the visited array
+        free(visited);
+
+        return count;
+}
+
+
+int main() {
+    // Create a graph
+    struct graph* graph = cree_graph();
+    int i;
+    // Test adding vertices
+    printf("Adding vertices:\n");
+    for (i = 0; i < 5; i++) {
+        ajouter_sommet(graph, i);
+        printf("  - Vertex %d added\n", i);
+    }
+
+    // Test adding arcs
+    printf("\nAdding arcs:\n");
+    ajouter_arc(graph, (struct node){.vertex = 0}, (struct node){.vertex = 1});
+    ajouter_arc(graph, (struct node){.vertex = 0}, (struct node){.vertex = 2});
+    ajouter_arc(graph, (struct node){.vertex = 1}, (struct node){.vertex = 3});
+    ajouter_arc(graph, (struct node){.vertex = 2}, (struct node){.vertex = 3});
+    printf("  - Arc (0, 1) added\n");
+    printf("  - Arc (0, 2) added\n");
+    printf("  - Arc (1, 3) added\n");
+    printf("  - Arc (2, 3) added\n");
+
+    // Test order (number of vertices)
+    printf("\nGraph order (number of vertices): %u\n", ordre(*graph));
+
+    // Test existence of an arc
+    printf("\nDoes arc (0, 3) exist? %s\n", arc(*graph, (struct node){.vertex = 0}, (struct node){.vertex = 3}) ? "Yes" : "No");
+
+    // Test outward degree of a node
+    printf("\nOutward degree of vertex 2: %d\n", degre_exterieur(*graph, (struct node){.vertex = 2}));
+
+    // Test inward degree of a node
+  //  printf("\nInward degree of vertex 3: %d\n", degre_interieur(*graph, (struct node){.vertex = 3}));
+
+    // Test total degree of a node
+ //   printf("\nTotal degree of vertex 1: %d\n", degre(*graph, (struct node){.vertex = 1}));
+
+    // Test DFS traversal
+    printf("\nDFS traversal starting from vertex 0:\n");
+    DFS(graph, 0);
+
+    // Test number of connected components
+ //   printf("\nNumber of connected components: %d\n", nombre_composantes_connexes(graph));
+
+    // Add another vertex and arc to create a separate component
+    ajouter_sommet(graph, 5);
+    printf("\n5 added\n");
+    ajouter_arc(graph, (struct node){.vertex = 5}, (struct node){.vertex = 4});
+
+    // Test number of connected components after adding a separate component
+ //   printf("\nNumber of connected components (after adding a separate component): %d\n", nombre_composantes_connexes(graph));
+
+    // Free the memory allocated for the graph
+    free(graph);
+
+    return 0;
 }
