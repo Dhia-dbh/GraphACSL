@@ -191,7 +191,7 @@ int nombre_composantes_connexes(struct graph* graph) {
         // Count connected components using DFS
         int count = 0;
         for (int v = 0; v < n; v++) {
-            if (!visited[v]) {  // If the node hasn't been visited yet
+            if (!visited[v] && graph->liste_adj[v]!=NULL) {  // If the node hasn't been visited yet
                 DFS_mark_visited(graph, v, visited);  // Perform DFS starting from this unvisited node
                 count++;  // Increment component count as this DFS explores a new component
             }
@@ -243,24 +243,25 @@ int main() {
     printf("\nTotal degree of vertex 1: %d\n", degre(*graph, (struct node){.vertex = 1}));
 
     //Test supp node
-    supprimer_sommet(graph, 3);
+  /*  supprimer_sommet(graph, 3);
     printf("deleted 3");
     printf("\nDoes arc (1, 3) exist? %s\n", arc(*graph, (struct node){.vertex = 1}, (struct node){.vertex = 3}) ? "Yes" : "No");
-
+*/
     //Test supp arc
+    /*
     printf("\nDoes arc (0, 1) exist? %s\n", arc(*graph, (struct node){.vertex = 0}, (struct node){.vertex = 1}) ? "Yes" : "No");
     supprimer_arc(graph, (struct node){.vertex = 0},(struct node){.vertex = 1});
     printf("\ndeleted 0 -> 1");
     printf("\nOutward degree of vertex 0: %d\n", degre_exterieur(*graph, (struct node){.vertex = 0}));
     printf("\nDoes arc (0, 1) exist? %s\n", arc(*graph, (struct node){.vertex = 1}, (struct node){.vertex = 3}) ? "Yes" : "No");
-
+*/
 
     // Test DFS traversal
     printf("\nDFS traversal starting from vertex 0:\n");
     DFS(graph, 0);
 
     // Test number of connected components
-    //printf("\nNumber of connected components: %d\n", nombre_composantes_connexes(graph));
+    printf("\nNumber of connected components: %d\n", nombre_composantes_connexes(graph));
 
     // Add another vertex and arc to create a separate component
     ajouter_sommet(graph, 5);
@@ -268,7 +269,7 @@ int main() {
     ajouter_arc(graph, (struct node){.vertex = 5}, (struct node){.vertex = 4});
 
     // Test number of connected components after adding a separate component
-    //printf("\nNumber of connected components (after adding a separate component): %d\n", nombre_composantes_connexes(graph));
+    printf("\nNumber of connected components (after adding a separate component): %d\n", nombre_composantes_connexes(graph));
 
     // Free the memory allocated for the graph
     free(graph);
