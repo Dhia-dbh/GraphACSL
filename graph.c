@@ -4,6 +4,8 @@
 
 struct graph* cree_graph(){
    struct graph* graph = (struct graph*)malloc(sizeof(struct graph));
+    for (int i = 0; i < n; i++)
+        graph->liste_adj[i]=NULL;
    return graph;
 }
 
@@ -118,7 +120,7 @@ unsigned arc(struct graph graph, struct node node1, struct node node2){
 }
 
 int degre_exterieur(struct graph graph, struct node node){
-    struct node* current = graph.liste_adj[node.vertex ];
+    struct node* current = graph.liste_adj[node.vertex ]->suivant;
     int count = 0;
     while (current != NULL) {
         count++;
@@ -231,20 +233,34 @@ int main() {
     printf("\nDoes arc (0, 3) exist? %s\n", arc(*graph, (struct node){.vertex = 0}, (struct node){.vertex = 3}) ? "Yes" : "No");
 
     // Test outward degree of a node
-    printf("\nOutward degree of vertex 2: %d\n", degre_exterieur(*graph, (struct node){.vertex = 2}));
+    printf("\nOutward degree of vertex 0: %d\n", degre_exterieur(*graph, (struct node){.vertex = 0}));
+
 
     // Test inward degree of a node
-  //  printf("\nInward degree of vertex 3: %d\n", degre_interieur(*graph, (struct node){.vertex = 3}));
+    printf("\nInward degree of vertex 3: %d\n", degre_interieur(*graph, (struct node){.vertex = 3}));
 
     // Test total degree of a node
- //   printf("\nTotal degree of vertex 1: %d\n", degre(*graph, (struct node){.vertex = 1}));
+    printf("\nTotal degree of vertex 1: %d\n", degre(*graph, (struct node){.vertex = 1}));
+
+    //Test supp node
+    supprimer_sommet(graph, 3);
+    printf("deleted 3");
+    printf("\nDoes arc (1, 3) exist? %s\n", arc(*graph, (struct node){.vertex = 1}, (struct node){.vertex = 3}) ? "Yes" : "No");
+
+    //Test supp arc
+    printf("\nDoes arc (0, 1) exist? %s\n", arc(*graph, (struct node){.vertex = 0}, (struct node){.vertex = 1}) ? "Yes" : "No");
+    supprimer_arc(graph, (struct node){.vertex = 0},(struct node){.vertex = 1});
+    printf("\ndeleted 0 -> 1");
+    printf("\nOutward degree of vertex 0: %d\n", degre_exterieur(*graph, (struct node){.vertex = 0}));
+    printf("\nDoes arc (0, 1) exist? %s\n", arc(*graph, (struct node){.vertex = 1}, (struct node){.vertex = 3}) ? "Yes" : "No");
+
 
     // Test DFS traversal
     printf("\nDFS traversal starting from vertex 0:\n");
     DFS(graph, 0);
 
     // Test number of connected components
- //   printf("\nNumber of connected components: %d\n", nombre_composantes_connexes(graph));
+    //printf("\nNumber of connected components: %d\n", nombre_composantes_connexes(graph));
 
     // Add another vertex and arc to create a separate component
     ajouter_sommet(graph, 5);
@@ -252,7 +268,7 @@ int main() {
     ajouter_arc(graph, (struct node){.vertex = 5}, (struct node){.vertex = 4});
 
     // Test number of connected components after adding a separate component
- //   printf("\nNumber of connected components (after adding a separate component): %d\n", nombre_composantes_connexes(graph));
+    //printf("\nNumber of connected components (after adding a separate component): %d\n", nombre_composantes_connexes(graph));
 
     // Free the memory allocated for the graph
     free(graph);
