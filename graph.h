@@ -74,9 +74,31 @@ ensures validGraph(graph) && validNode(src) && validNode(dest);
 ensures arc(graph, src, dest; \result) ;
 */
 unsigned arc(struct graph graph, struct node src, struct node dest);
-
+/*@ assigns \nothing;
+   predicate degre_ext(node node, int result) = node.suivant!=NULL?degre_ext(node.suivant, result + 1):result;
+   ensures validGraph(graph) && validNode(node);
+   ensures \result >= 0 && \result <= INT_MIN;
+   ensures degre_ext(node) >= 0 && degre_ext(node) <= INT_MIN;
+   ensures degre_ext(node) == \result;
+*/
 int degre_exterieur(struct graph graph, struct node node);
-
+/*@ assigns \nothing;
+   predicate degre_int(graph graph, node node, int counter, int result) = (counter < n) ?(
+                                                                              (counter !=node.vertex) ?(
+                                                                                 arcExists(graph.liste_adj[counter], node)?
+                                                                                    degre_int(graph, node, counter + 1, result +1):
+                                                                                    degre_int(graph, node, counter + 1, result)
+                                                                              ):
+                                                                              degre_int(graph, node, counter + 1, result):
+                                                                              0                                                                                                                                                                       
+                                                                           ):
+                                                                           0
+                                                                        );
+   ensures validGraph(graph) && validNode(node);
+   ensures \result >= 0 && \result <= INT_MIN;
+   ensures degre_int(node) >= 0 && degre_int(node) <= INT_MIN;
+   ensures degre_int(node) == \result;
+*/
 int degre_interieur(struct graph graph, struct node node);
 
 int degre(struct graph graph, struct node node);
