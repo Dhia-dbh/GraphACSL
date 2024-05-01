@@ -108,10 +108,10 @@ void supprimer_sommet(struct graph* graph, unsigned vertex) {
    return result;
 }
 
-unsigned arc(struct graph graph, struct node node1, struct node node2){
-    struct node* current = graph.liste_adj[node1.vertex ];
+unsigned arc(struct graph graph, struct node src, struct node dest){
+    struct node* current = graph.liste_adj[src.vertex ];
     while (current != NULL) {
-        if (current->vertex == node2.vertex) {
+        if (current->vertex == dest.vertex) {
             return 1;  // Arc found
         }
         current = current->suivant;

@@ -1,3 +1,4 @@
+#include <limits.h>
 #define n 100 // Le nombre de sommets de G
 /**
  * We will create an array in which we will store all nodes of graph
@@ -37,15 +38,42 @@ ensures \at(graph->liste_adj[src.vertex], POST) != NULL;
 void ajouter_arc(struct graph* graph, struct node src, struct node dest);
 
 //Dans notre implémentation, un arc sortant par
+/*@ assigns garph;
+ensures validGraph(graph) && validNode(src) && validNode(dest);
+ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
+*/
 void supprimer_arc(struct graph* graph, struct node src, struct node dest);  
-
+/*@ assigns garph;
+ensures validGraph(graph) && validVertex(vertex);
+ensures \at(graph->liste_adj[src->vertex], Pre) == NULL;
+ensures \at(graph->liste_adj[src->vertex], Post) != NULL;
+*/
 void ajouter_sommet(struct graph* graph, unsigned vertex);
-
+/*@ assigns garph;
+ensures validGraph(graph) && validVertex(vertex);
+ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
+*/
 void supprimer_sommet(struct graph* graph, unsigned vertex);
-
+/*@ assigns \nothing;
+ensures validGraph(g);
+ensures \valid(\result);
+ensures \result >= 0 && \result <= INT_MAX;
+*/
 unsigned ordre(struct graph g);
-
-unsigned arc(struct graph graph, struct node node1, struct node node2);
+/*@ assigns \nothing;
+predicate arcExists(node src, node dest) =
+  \exists node current = src;
+  current != NULL &&
+  (
+   current == dest || arcExists(*(current.suivant), dest)
+  );
+predicate arc(graph graph, node src, node dest, unsigned result) = ((result == 0) ==> !arcExists(graph.liste_adj[src.vertext], dest)) 
+                                                                  && 
+                                                                  ((result == 1) ==> arcExists(graph.liste_adj[src.vertext], dest));
+ensures validGraph(graph) && validNode(src) && validNode(dest);
+ensures arc(graph, src, dest; \result) ;
+*/
+unsigned arc(struct graph graph, struct node src, struct node dest);
 
 int degre_exterieur(struct graph graph, struct node node);
 
