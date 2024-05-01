@@ -93,8 +93,7 @@ int degre_exterieur(struct graph graph, struct node node);
                                                                               degre_int(graph, node, counter + 1, result):
                                                                               0                                                                                                                                                                       
                                                                            ):
-                                                                           0
-                                                                        );
+                                                                           0;
    predicate validDegre_int(int result) = degre_int(graph, node, 0, 0) >= 0 && degre_int(graph, node, 0, 0) <= INT_MIN;
    ensures validGraph(&graph) && validNode(&node);
    ensures \result >= 0 && \result <= INT_MIN;
