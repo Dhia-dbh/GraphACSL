@@ -7,6 +7,11 @@
  * For exemple if you have only 3 nodes the size of liste_adj will still be 100 and the cases 0, 7 and 99 will be occupied by nodes when 
  * 3 nodes with 0, 7 and 99 as vertex values are added to the initial graph
 */
+/*@ predicate validGraph(graph* g) = \valid(g) && valid(g->liste_adj+(0..n-1));
+predicate seperatedGraph(graph* g) = \seperated(g->liste_adj, g->liste_adj+(1..n-1));
+predicate nullInitGraph(graph* g) = \forall int i;i<n && i>=0 ==> g->liste_adj[i] == NULL;
+*/
+
 
 struct node{
    unsigned vertex;
@@ -16,7 +21,11 @@ struct node{
 struct graph{
    struct node* liste_adj[n]; //Un tableau de listes liniaries décriant les aretes de G
 };
-
+/*@ assings \nothing;
+ensures validGraph(\result);
+ensures seperatedGraph(\result);
+ensures nullInitGraph(\result);
+*/
 struct graph* cree_graph();
 
 
@@ -38,6 +47,9 @@ int degre_exterieur(struct graph graph, struct node node);
 int degre_interieur(struct graph graph, struct node node);
 
 int degre(struct graph graph, struct node node);
+
 void DFS_mark_visited(struct graph* graph, unsigned vertex, int visited[]);
+
 void DFS(struct graph* graph, unsigned vertex);
+
 int nombre_composantes_connexes(struct graph* graph);
