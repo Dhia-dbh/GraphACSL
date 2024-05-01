@@ -10,6 +10,8 @@
 /*@ predicate validGraph(graph* g) = \valid(g) && valid(g->liste_adj+(0..n-1));
 predicate seperatedGraph(graph* g) = \seperated(g->liste_adj, g->liste_adj+(1..n-1));
 predicate nullInitGraph(graph* g) = \forall int i;i<n && i>=0 ==> g->liste_adj[i] == NULL;
+predicate validVertex(unsigned v) = \valid(v) && v>=0 && v<n-1;
+predicate validNode(node* n) = \valid(n->vertex) && \valid(n->suivant) && validVertex(n->vertex);
 */
 
 
@@ -28,7 +30,10 @@ ensures nullInitGraph(\result);
 */
 struct graph* cree_graph();
 
-
+/*@ assigns graph;
+ensures validGraph(graph) && validNode(src) && validNode(dest);
+ensures \at(graph->liste_adj[src.vertex], POST) != NULL;
+*/
 void ajouter_arc(struct graph* graph, struct node src, struct node dest);
 
 //Dans notre implémentation, un arc sortant par
