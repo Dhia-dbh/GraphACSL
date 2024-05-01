@@ -55,7 +55,7 @@ ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
 */
 void supprimer_sommet(struct graph* graph, unsigned vertex);
 /*@ assigns \nothing;
-ensures validGraph(g);
+ensures validGraph(&g);
 ensures \valid(\result);
 ensures \result >= 0 && \result <= INT_MAX;
 */
@@ -70,16 +70,17 @@ predicate arcExists(node src, node dest) =
 predicate arc(graph graph, node src, node dest, unsigned result) = ((result == 0) ==> !arcExists(graph.liste_adj[src.vertext], dest)) 
                                                                   && 
                                                                   ((result == 1) ==> arcExists(graph.liste_adj[src.vertext], dest));
-ensures validGraph(graph) && validNode(src) && validNode(dest);
+ensures validGraph(&graph) && validNode(&src) && validNode(&dest);
 ensures arc(graph, src, dest; \result) ;
 */
 unsigned arc(struct graph graph, struct node src, struct node dest);
 /*@ assigns \nothing;
    predicate degre_ext(node node, int result) = node.suivant!=NULL?degre_ext(node.suivant, result + 1):result;
-   ensures validGraph(graph) && validNode(node);
+   ensures validGraph(&graph) && validNode(&node);
+   predicate validDegre_ext(int result) = degre_ext(graph.liste_adj[src.vertex], 0) >= 0 && degre_ext(graph.liste_adj[src.vertex], 0) <= INT_MIN;
    ensures \result >= 0 && \result <= INT_MIN;
-   ensures degre_ext(node) >= 0 && degre_ext(node) <= INT_MIN;
-   ensures degre_ext(node) == \result;
+   ensures validDegre_ext(degre_ext(graph.liste_adj[src.vertex], 0));
+   ensures degre_ext(graph.liste_adj[src.vertex], 0) == \result;
 */
 int degre_exterieur(struct graph graph, struct node node);
 /*@ assigns \nothing;
@@ -94,13 +95,21 @@ int degre_exterieur(struct graph graph, struct node node);
                                                                            ):
                                                                            0
                                                                         );
-   ensures validGraph(graph) && validNode(node);
+   predicate validDegre_int(int result) = degre_int(graph, node, 0, 0) >= 0 && degre_int(graph, node, 0, 0) <= INT_MIN;
+   ensures validGraph(&graph) && validNode(&node);
    ensures \result >= 0 && \result <= INT_MIN;
-   ensures degre_int(node) >= 0 && degre_int(node) <= INT_MIN;
-   ensures degre_int(node) == \result;
+   ensures validDegre_int(degre_int(graph, node, 0, 0));
+   ensures degre_int(graph, node, 0, 0) == \result;
 */
 int degre_interieur(struct graph graph, struct node node);
-
+/*@ assigns \nothing;
+ensures validGraph(&graph) && validNode(&node);
+ensures \result >= 0 && \result <= INT_MIN;
+ensures degre_int(graph, node, 0, 0) >= 0 && degre_int(graph, node, 0, 0) <= INT_MIN;
+ensures validDegre_ext(degre_ext(graph.liste_adj[src.vertex], 0));
+ensures validDegre_int(degre_int(graph, node, 0, 0));
+ensures degre_int(graph, node, 0, 0) - degre_ext(graph.liste_adj[node.vertex]) == \result;
+*/
 int degre(struct graph graph, struct node node);
 
 void DFS_mark_visited(struct graph* graph, unsigned vertex, int visited[]);
