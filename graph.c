@@ -25,11 +25,14 @@ void ajouter_arc(struct graph* graph, struct node src, struct node dest){
     if (current == NULL) {
         graph->liste_adj[src.vertex] = new_node;
     } else {
+        int i=0;
         /*@ loop invariant: i>=0 && i<=n;
-            loop assigns current;
+            loop assigns graph->liste_adj[src.vertex], current, i;
+            loop variant: n-i;
         */
         while (current->suivant != NULL) {
             current = current->suivant;
+            ++i;
         }
         current->suivant = new_node;
     }
@@ -44,7 +47,11 @@ void supprimer_arc(struct graph* graph, struct node src, struct node dest){
     //  Search for the node to be deleted in the source's adjacency list
     struct node* current = graph->liste_adj[src.vertex];
     struct node* prev = NULL;  // Keep track of the previous node for efficient deletion
-
+    int i=0;
+    /*@ loop invariant: i>=0 && i<=n;
+        loop assigns graph->liste_adj[src.vertex], current, prev, i;
+        loop variant: n-i;
+        */
     while (current != NULL) {
         if (current->vertex == dest.vertex) {
             // Arc found: remove the current node
@@ -58,6 +65,7 @@ void supprimer_arc(struct graph* graph, struct node src, struct node dest){
         }
         prev = current;
         current = current->suivant;
+        i++;
     }
 
     // Arc not found: inform the user
