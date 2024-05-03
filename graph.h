@@ -24,38 +24,38 @@ struct node{
 struct graph{
    struct node* liste_adj[n]; //Un tableau de listes liniaries décriant les aretes de G
 };
-/*@ assings \nothing;
-ensures validGraph(\result);
-ensures seperatedGraph(\result);
+/*@ assigns \nothing;
+requires validGraph(\result);
+requires seperatedGraph(\result);
 ensures nullInitGraph(\result);
 */
 struct graph* cree_graph();
 
 /*@ assigns graph;
-ensures validGraph(graph) && validNode(src) && validNode(dest);
+requires validGraph(graph) && validNode(src) && validNode(dest);
 ensures \at(graph->liste_adj[src.vertex], POST) != NULL;
 */
 void ajouter_arc(struct graph* graph, struct node src, struct node dest);
 
 //Dans notre implémentation, un arc sortant par
 /*@ assigns garph;
-ensures validGraph(graph) && validNode(src) && validNode(dest);
+requires validGraph(graph) && validNode(src) && validNode(dest);
 ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
 */
 void supprimer_arc(struct graph* graph, struct node src, struct node dest);  
 /*@ assigns garph;
-ensures validGraph(graph) && validVertex(vertex);
+requires validGraph(graph) && validVertex(vertex);
 ensures \at(graph->liste_adj[src->vertex], Pre) == NULL;
 ensures \at(graph->liste_adj[src->vertex], Post) != NULL;
 */
 void ajouter_sommet(struct graph* graph, unsigned vertex);
 /*@ assigns garph;
-ensures validGraph(graph) && validVertex(vertex);
+requires validGraph(graph) && validVertex(vertex);
 ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
 */
 void supprimer_sommet(struct graph* graph, unsigned vertex);
 /*@ assigns \nothing;
-ensures validGraph(&g);
+requires validGraph(&g);
 ensures \valid(\result);
 ensures \result >= 0 && \result <= INT_MAX;
 */
@@ -76,7 +76,7 @@ ensures arc(graph, src, dest; \result) ;
 unsigned arc(struct graph graph, struct node src, struct node dest);
 /*@ assigns \nothing;
    predicate degre_ext(node node, int result) = node.suivant!=NULL?degre_ext(node.suivant, result + 1):result;
-   ensures validGraph(&graph) && validNode(&node);
+   requires validGraph(&graph) && validNode(&node);
    predicate validDegre_ext(int result) = degre_ext(graph.liste_adj[src.vertex], 0) >= 0 && degre_ext(graph.liste_adj[src.vertex], 0) <= INT_MIN;
    ensures \result >= 0 && \result <= INT_MIN;
    ensures validDegre_ext(degre_ext(graph.liste_adj[src.vertex], 0));
@@ -95,14 +95,14 @@ int degre_exterieur(struct graph graph, struct node node);
                                                                            ):
                                                                            0;
    predicate validDegre_int(int result) = degre_int(graph, node, 0, 0) >= 0 && degre_int(graph, node, 0, 0) <= INT_MIN;
-   ensures validGraph(&graph) && validNode(&node);
+   requires validGraph(&graph) && validNode(&node);
    ensures \result >= 0 && \result <= INT_MIN;
    ensures validDegre_int(degre_int(graph, node, 0, 0));
    ensures degre_int(graph, node, 0, 0) == \result;
 */
 int degre_interieur(struct graph graph, struct node node);
 /*@ assigns \nothing;
-ensures validGraph(&graph) && validNode(&node);
+requires validGraph(&graph) && validNode(&node);
 ensures \result >= 0 && \result <= INT_MIN;
 ensures degre_int(graph, node, 0, 0) >= 0 && degre_int(graph, node, 0, 0) <= INT_MIN;
 ensures validDegre_ext(degre_ext(graph.liste_adj[src.vertex], 0));

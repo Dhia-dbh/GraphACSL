@@ -243,12 +243,12 @@ int main() {
     printf("\nTotal degree of vertex 1: %d\n", degre(*graph, (struct node){.vertex = 1}));
 
     //Test supp node
-  /*  supprimer_sommet(graph, 3);
+  /**  supprimer_sommet(graph, 3);
     printf("deleted 3");
     printf("\nDoes arc (1, 3) exist? %s\n", arc(*graph, (struct node){.vertex = 1}, (struct node){.vertex = 3}) ? "Yes" : "No");
 */
     //Test supp arc
-    /*
+/**
     printf("\nDoes arc (0, 1) exist? %s\n", arc(*graph, (struct node){.vertex = 0}, (struct node){.vertex = 1}) ? "Yes" : "No");
     supprimer_arc(graph, (struct node){.vertex = 0},(struct node){.vertex = 1});
     printf("\ndeleted 0 -> 1");
