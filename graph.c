@@ -124,6 +124,10 @@ void supprimer_sommet(struct graph* graph, unsigned vertex) {
 
 unsigned ordre(struct graph graph){
    unsigned result=0;
+    /*@ loop invariant: result>=0 && result<=n;
+        loop assigns result;
+        loop variant: n-result;
+    */
    for(int i=0; i<n;++i){
       if (graph.liste_adj[i] != NULL)
          ++result;
@@ -132,12 +136,18 @@ unsigned ordre(struct graph graph){
 }
 
 unsigned arc(struct graph graph, struct node src, struct node dest){
-    struct node* current = graph.liste_adj[src.vertex ];
+    struct node* current = graph.liste_adj[src.vertex];
+    int i=0;
+    /*@ loop invariant: i>=0 && i<=n;
+        loop assigns current, i;
+        loop variant: n-i;
+    */
     while (current != NULL) {
         if (current->vertex == dest.vertex) {
             return 1;  // Arc found
         }
         current = current->suivant;
+        ++i;
     }
     return 0;  // Arc not found
 }
@@ -145,6 +155,10 @@ unsigned arc(struct graph graph, struct node src, struct node dest){
 int degre_exterieur(struct graph graph, struct node node){
     struct node* current = graph.liste_adj[node.vertex ]->suivant;
     int count = 0;
+    /*@ loop invariant: counti>=0 && count<=n;
+        loop assigns current, count;
+        loop variant: n-count;
+    */
     while (current != NULL) {
         count++;
         current = current->suivant;
