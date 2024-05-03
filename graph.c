@@ -25,6 +25,9 @@ void ajouter_arc(struct graph* graph, struct node src, struct node dest){
     if (current == NULL) {
         graph->liste_adj[src.vertex] = new_node;
     } else {
+        /*@ loop invariant: i>=0 && i<=n;
+            loop assigns current;
+        */
         while (current->suivant != NULL) {
             current = current->suivant;
         }
