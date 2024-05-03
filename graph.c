@@ -4,7 +4,13 @@
 
 struct graph* cree_graph(){
    struct graph* graph = (struct graph*)malloc(sizeof(struct graph));
-    for (int i = 0; i < n; i++)
+   int i=0;
+   /*@ loop invariant: i>=0 && i<=n;
+    loop invariant: \forall int j; j>=0 && j<i ==> graph->liste_adj[j] == NULL;
+    loop assigns graph->liste_adj[0..i], i;
+    loop variant: n-i;
+   */
+    for (i; i < n; i++)
         graph->liste_adj[i]=NULL;
    return graph;
 }
