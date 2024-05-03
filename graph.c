@@ -169,6 +169,10 @@ int degre_exterieur(struct graph graph, struct node node){
 
 int degre_interieur(struct graph graph, struct node node){
     int count = 0;
+    /*@ loop invariant: i>=0 && i<=n;
+        loop assigns current, count, i;
+        loop variant: n-i;
+    */
     for (int i = 0; i < n; i++) {
         struct node* current = graph.liste_adj[i];
         while (current != NULL) {
