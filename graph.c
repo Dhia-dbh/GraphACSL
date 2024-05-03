@@ -51,7 +51,7 @@ void supprimer_arc(struct graph* graph, struct node src, struct node dest){
     /*@ loop invariant: i>=0 && i<=n;
         loop assigns graph->liste_adj[src.vertex], current, prev, i;
         loop variant: n-i;
-        */
+    */
     while (current != NULL) {
         if (current->vertex == dest.vertex) {
             // Arc found: remove the current node
@@ -107,16 +107,22 @@ void supprimer_sommet(struct graph* graph, unsigned vertex) {
 
     // Delete outgoing arcs
     struct node* current = graph->liste_adj[vertex];
+    int i=0;
+    /*@ loop invariant: i>=0 && i<=n;
+        loop assigns graph->liste_adj[vertex], current, i;
+        loop variant: n-i;
+    */
     while (current != NULL) {
         struct node* next = current->suivant;
         free(current);
         current = next;
+        ++i;
     }
-    graph->liste_adj[vertex ] = NULL;
+    graph->liste_adj[vertex] = NULL;
 
 }
 
-    unsigned ordre(struct graph graph){
+unsigned ordre(struct graph graph){
    unsigned result=0;
    for(int i=0; i<n;++i){
       if (graph.liste_adj[i] != NULL)
