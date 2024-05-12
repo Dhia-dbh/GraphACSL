@@ -200,7 +200,7 @@ void DFS(struct graph graph, unsigned vertex, int visited[],int printed) {
     /*@
     predicate pointerLoopVariant(struct node* p) = p->suivant?(1+pointerLoopVariant(p->suivant)):0;
     loop assigns current;
-    loop variant: pointerLoopVariant;
+    loop variant: pointerLoopVariant(current);
     */
     while (current) {
         if (!visited[current->vertex]) {
