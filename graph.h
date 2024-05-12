@@ -31,18 +31,22 @@ ensures nullInitGraph(\result);
 */
 struct graph* cree_graph();
 
-/*@ assigns graph;
-requires validGraph(graph) && validNode(src) && validNode(dest);
-ensures \at(graph->liste_adj[src.vertex], POST) != NULL;
+/*@ 
+  assigns graph->liste_adj[src.vertex];
+  requires validGraph(graph) && validVertex(src.vertex) && validVertex(dest.vertex);
+  ensures \exists struct node* p; p == \old(graph->liste_adj[src.vertex]) || p == \new && p->vertex == dest.vertex && p->suivant == \old(graph->liste_adj[src.vertex]);
 */
-void ajouter_arc(struct graph* graph, struct node src, struct node dest);
+void ajouter_arc(struct graph* graph, struct node src, struct node dest);
 
 //Dans notre implémentation, un arc sortant par
-/*@ assigns garph;
-requires validGraph(graph) && validNode(src) && validNode(dest);
-ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
+/*@ 
+  requires validGraph(graph) && validNode(src) && validNode(dest);
+  assigns graph->liste_adj[src.vertex];
+  ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
+  ensures \forall struct node* p; \old(p == graph->liste_adj[src.vertex]) && p->vertex != dest.vertex ==> p->vertex == \old(p->vertex) && p->suivant == \old(p->suivant);
 */
-void supprimer_arc(struct graph* graph, struct node src, struct node dest);  
+void supprimer_arc(struct graph* graph, struct node src, struct node dest);
+
 /*@ assigns garph;
 requires validGraph(graph) && validVertex(vertex);
 ensures \at(graph->liste_adj[src->vertex], Pre) == NULL;
@@ -75,7 +79,7 @@ ensures arc(graph, src, dest; \result) ;
 */
 unsigned arc(struct graph graph, struct node src, struct node dest);
 /*@ assigns \nothing;
-   predicate degre_ext(node node, int result) = node.suivant!=NULL?degre_ext(node.suivant, result + 1):result;
+   logic degre_ext(node node, int result) = node.suivant!=NULL?degre_ext(node.suivant, result + 1):result;
    requires validGraph(&graph) && validNode(&node);
    predicate validDegre_ext(int result) = degre_ext(graph.liste_adj[src.vertex], 0) >= 0 && degre_ext(graph.liste_adj[src.vertex], 0) <= INT_MIN;
    ensures \result >= 0 && \result <= INT_MIN;
@@ -84,7 +88,7 @@ unsigned arc(struct graph graph, struct node src, struct node dest);
 */
 int degre_exterieur(struct graph graph, struct node node);
 /*@ assigns \nothing;
-   predicate degre_int(graph graph, node node, int counter, int result) = (counter < n) ?(
+   logic degre_int(graph graph, node node, int counter, int result) = (counter < n) ?(
                                                                               (counter !=node.vertex) ?(
                                                                                  arcExists(graph.liste_adj[counter], node)?
                                                                                     degre_int(graph, node, counter + 1, result +1):
@@ -111,8 +115,17 @@ ensures degre_int(graph, node, 0, 0) - degre_ext(graph.liste_adj[node.vertex]) =
 */
 int degre(struct graph graph, struct node node);
 
-void DFS_mark_visited(struct graph* graph, unsigned vertex, int visited[]);
 
-void DFS(struct graph* graph, unsigned vertex);
+/*@
+  requires validGraph(&graph);
+  requires \valid(visited + (0 .. n-1));
+  assigns visited[0 .. n-1];
+*/
+void DFS(struct graph graph, unsigned vertex, int visited[],int printed);
 
-int nombre_composantes_connexes(struct graph* graph);
+/*@
+  requires validGraph(graph);
+  assigns \nothing;
+  ensures \result >= 0 && \result <= n;
+*/
+int nombre_composantes_connexes(struct graph graph);
