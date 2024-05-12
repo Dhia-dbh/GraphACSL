@@ -193,10 +193,10 @@ int degre(struct graph graph, struct node node){
    return degre_exterieur(graph, node) - degre_interieur(graph, node);
 }
 
-void DFS(struct graph* graph, unsigned vertex, int visited[],int printed) {
+void DFS(struct graph graph, unsigned vertex, int visited[],int printed) {
     visited[vertex] = 1;  // Mark the current node as visited
     // Recur for all unvisited adjacent vertices
-    struct node* current = graph->liste_adj[vertex];
+    struct node* current = graph.liste_adj[vertex];
     while (current) {
         if (!visited[current->vertex]) {
             if (printed)
@@ -208,14 +208,14 @@ void DFS(struct graph* graph, unsigned vertex, int visited[],int printed) {
 }
 
 
-int nombre_composantes_connexes(struct graph* graph) {
+int nombre_composantes_connexes(struct graph graph) {
         // Allocate visited array (all 0 for unvisited initially)
         int visited[n] = { 0 };
 
         // Count connected components using DFS
         int count = 0;
         for (int v = 0; v < n; v++) {
-            if (!visited[v] && graph->liste_adj[v]!=NULL) {  // If the node hasn't been visited yet
+            if (!visited[v] && graph.liste_adj[v]!=NULL) {  // If the node hasn't been visited yet
                 DFS(graph, v, visited,0);  // Perform DFS starting from this unvisited node
                 count++;  // Increment component count as this DFS explores a new component
             }
@@ -291,10 +291,10 @@ int main() {
     printf("\nDFS traversal starting from vertex 0 : ");
     int visited[n] = { 0 };
 
-    DFS(graph, 0,visited,1);
+    DFS(*graph, 0,visited,1);
 
     // Test number of connected components
-    printf("\nNumber of connected components: %d\n", nombre_composantes_connexes(graph));
+    printf("\nNumber of connected components: %d\n", nombre_composantes_connexes(*graph));
 /*
     // Add another vertex and arc to create a separate component
     ajouter_sommet(graph, 5);

@@ -111,7 +111,15 @@ ensures degre_int(graph, node, 0, 0) - degre_ext(graph.liste_adj[node.vertex]) =
 */
 int degre(struct graph graph, struct node node);
 
-void DFS(struct graph* graph, unsigned vertex, int visited[],int printed);
 
+/*@
+  requires validGraph(&graph) && validNode(&node);
+  requires \valid(visited + (0 .. g->nb_sommet-1));
+  assigns visited[0 .. n-1];
+*/
+void DFS(struct graph graph, unsigned vertex, int visited[],int printed);
 
-int nombre_composantes_connexes(struct graph* graph);
+/*@
+  requires validGraph(&graph)
+  */
+int nombre_composantes_connexes(struct graph graph);
