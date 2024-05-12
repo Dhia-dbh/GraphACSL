@@ -31,12 +31,6 @@ ensures nullInitGraph(\result);
 */
 struct graph* cree_graph();
 
-/*@ assigns graph;
-requires validGraph(graph) && validNode(src) && validNode(dest);
-ensures \at(graph->liste_adj[src.vertex], POST) != NULL;
-*/
-void ajouter_arc(struct graph* graph, struct node src, struct node dest);
-
 /*@ 
   assigns graph->liste_adj[src.vertex];
   requires validGraph(graph) && validVertex(src.vertex) && validVertex(dest.vertex);
@@ -45,11 +39,14 @@ void ajouter_arc(struct graph* graph, struct node src, struct node dest);
 void ajouter_arc(struct graph* graph, struct node src, struct node dest);
 
 //Dans notre implémentation, un arc sortant par
-/*@ assigns garph;
-requires validGraph(graph) && validNode(src) && validNode(dest);
-ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
+/*@ 
+  requires validGraph(graph) && validNode(src) && validNode(dest);
+  assigns graph->liste_adj[src.vertex];
+  ensures \at(graph->liste_adj[src->vertex], Pre) != NULL;
+  ensures \forall struct node* p; \old(p == graph->liste_adj[src.vertex]) && p->vertex != dest.vertex ==> p->vertex == \old(p->vertex) && p->suivant == \old(p->suivant);
 */
-void supprimer_arc(struct graph* graph, struct node src, struct node dest);  
+void supprimer_arc(struct graph* graph, struct node src, struct node dest);
+
 /*@ assigns garph;
 requires validGraph(graph) && validVertex(vertex);
 ensures \at(graph->liste_adj[src->vertex], Pre) == NULL;
