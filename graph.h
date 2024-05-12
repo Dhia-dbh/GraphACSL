@@ -111,8 +111,7 @@ ensures degre_int(graph, node, 0, 0) - degre_ext(graph.liste_adj[node.vertex]) =
 */
 int degre(struct graph graph, struct node node);
 
-void DFS_mark_visited(struct graph* graph, unsigned vertex, int visited[]);
+void DFS(struct graph* graph, unsigned vertex, int visited[],int printed);
 
-void DFS(struct graph* graph, unsigned vertex);
 
 int nombre_composantes_connexes(struct graph* graph);
