@@ -37,6 +37,13 @@ ensures \at(graph->liste_adj[src.vertex], POST) != NULL;
 */
 void ajouter_arc(struct graph* graph, struct node src, struct node dest);
 
+/*@ 
+  assigns graph->liste_adj[src.vertex];
+  requires validGraph(graph) && validVertex(src.vertex) && validVertex(dest.vertex);
+  ensures \exists struct node* p; p == \old(graph->liste_adj[src.vertex]) || p == \new && p->vertex == dest.vertex && p->suivant == \old(graph->liste_adj[src.vertex]);
+*/
+void ajouter_arc(struct graph* graph, struct node src, struct node dest);
+
 //Dans notre implémentation, un arc sortant par
 /*@ assigns garph;
 requires validGraph(graph) && validNode(src) && validNode(dest);
@@ -113,13 +120,15 @@ int degre(struct graph graph, struct node node);
 
 
 /*@
-  requires validGraph(&graph) && validNode(&node);
-  requires \valid(visited + (0 .. g->nb_sommet-1));
+  requires validGraph(&graph);
+  requires \valid(visited + (0 .. n-1));
   assigns visited[0 .. n-1];
 */
 void DFS(struct graph graph, unsigned vertex, int visited[],int printed);
 
 /*@
-  requires validGraph(&graph)
-  */
+  requires validGraph(graph);
+  assigns \nothing;
+  ensures \result >= 0 && \result <= n;
+*/
 int nombre_composantes_connexes(struct graph graph);

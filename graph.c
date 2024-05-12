@@ -214,6 +214,11 @@ int nombre_composantes_connexes(struct graph graph) {
 
         // Count connected components using DFS
         int count = 0;
+        /*@ loop invariant: count>=0 && count<=n;
+        loop invariant: v>=0 && v<=n;
+        loop assigns current, count, v;
+        loop variant: n-v;
+    */
         for (int v = 0; v < n; v++) {
             if (!visited[v] && graph.liste_adj[v]!=NULL) {  // If the node hasn't been visited yet
                 DFS(graph, v, visited,0);  // Perform DFS starting from this unvisited node
