@@ -79,7 +79,7 @@ ensures arc(graph, src, dest; \result) ;
 */
 unsigned arc(struct graph graph, struct node src, struct node dest);
 /*@ assigns \nothing;
-   predicate degre_ext(node node, int result) = node.suivant!=NULL?degre_ext(node.suivant, result + 1):result;
+   logic degre_ext(node node, int result) = node.suivant!=NULL?degre_ext(node.suivant, result + 1):result;
    requires validGraph(&graph) && validNode(&node);
    predicate validDegre_ext(int result) = degre_ext(graph.liste_adj[src.vertex], 0) >= 0 && degre_ext(graph.liste_adj[src.vertex], 0) <= INT_MIN;
    ensures \result >= 0 && \result <= INT_MIN;
@@ -88,7 +88,7 @@ unsigned arc(struct graph graph, struct node src, struct node dest);
 */
 int degre_exterieur(struct graph graph, struct node node);
 /*@ assigns \nothing;
-   predicate degre_int(graph graph, node node, int counter, int result) = (counter < n) ?(
+   logic degre_int(graph graph, node node, int counter, int result) = (counter < n) ?(
                                                                               (counter !=node.vertex) ?(
                                                                                  arcExists(graph.liste_adj[counter], node)?
                                                                                     degre_int(graph, node, counter + 1, result +1):

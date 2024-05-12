@@ -198,7 +198,7 @@ void DFS(struct graph graph, unsigned vertex, int visited[],int printed) {
     // Recur for all unvisited adjacent vertices
     struct node* current = graph.liste_adj[vertex];
     /*@
-    predicate pointerLoopVariant(struct node* p) = p->suivant?(1+pointerLoopVariant(p->suivant)):0;
+    logic pointerLoopVariant(struct node* p) = p->suivant?(1+pointerLoopVariant(p->suivant)):0;
     loop assigns current;
     loop variant: pointerLoopVariant(current);
     */
